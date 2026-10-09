@@ -4,6 +4,8 @@ Third-person aiming fixes for GTA San Andreas 1.0 US, with an obstruction marker
 
 ![Obstruction marker in game](assets/preview.png)
 
+Demo video: [assets/demo.mp4](assets/demo.mp4)
+
 ## What it does
 
 - **Shots hit what you aim at.** GTA fires third-person shots from the camera, so a wall between the gun and the target can be ignored, or the bullet can land beside the crosshair. With this mod, the shot starts at the gun and aims at the point under the crosshair. Cover in front of the gun blocks the bullet.
