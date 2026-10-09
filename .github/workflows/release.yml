@@ -1,0 +1,45 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: MSVC x86 environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+
+      - name: Build aimfix.asi
+        shell: cmd
+        run: cl /nologo /LD /O2 /MT /W4 /EHsc /std:c++17 src\aimfix.cpp /Fe:aimfix.asi /link /DLL
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package/models/txd | Out-Null
+          Copy-Item aimfix.asi package/
+          Copy-Item files/models/txd/aimfix.txd package/models/txd/
+          Copy-Item README.md, LICENSE package/
+          Compress-Archive -Path package/* -DestinationPath "aimfix-${{ github.ref_name }}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aimfix
+          path: aimfix-*.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: aimfix-*.zip
+          generate_release_notes: true
